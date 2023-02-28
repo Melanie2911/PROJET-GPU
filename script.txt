@@ -1,0 +1,48 @@
+Pourquoi QuickSort ?
+
+- Quicksort is generally recognized as the fastest sorting algorithm
+
+- Quicksort has some natural concurrency
+	=> The low list and high list can sort themselves concurrently
+
+Nous considérons le cas de la mémoire distribuée
+Chaque processus détient un segment de la liste non triée.
+La liste partitionnée mais non triée est distribuée uniformément entre les processus.
+Résultat souhaité d'un algorithme parallèle de tri rapide :
+Le segment de liste stocké sur chaque processus est trié.
+Le dernier élément de la liste du processeur i est plus petit que le premier élément de la liste du processus i + 1
+
+Nous choisissons aléatoirement un pivot dans l'un des processus et
+le diffusons à tous les processus;
+Chaque processus divise sa liste non triée en deux listes : celles qui sont plus petites
+inférieures (ou égales) au pivot, celles supérieures au pivot.
+Chaque processus dans la moitié supérieure de la liste des processus envoie sa "liste basse" à un processus partenaire dans la moitié inférieure.
+à un processus partenaire dans la moitié inférieure de la liste des processus et reçoit en retour
+une "liste haute" en retour;
+Maintenant, les processus de la moitié supérieure n'ont que des valeurs supérieures au pivot.
+et les processus de la moitié inférieure n'ont que des valeurs inférieures au pivot
+pivot.
+Ensuite, les processus se divisent en deux groupes et l'algorithme se répète.
+Après log P récursions, chaque processus possède une liste non triée de valeurs
+complètement disjointe des valeurs détenues par les autres processus.
+	La plus grande valeur du processus i sera plus petite que la plus petite
+valeur détenue par le processus i + 1.
+	Chaque processus peut trier sa liste en utilisant le quicksort séquentiel
+
+OPTIMISATION : 
+Cet algorithme parallèle de tri croisé est susceptible de faire un mauvais travail de d'équilibrer la charge
+Si la valeur du pivot n'est pas la valeur médiane, nous ne diviserons pas la liste en deux sous-listes égales
+Trouver la valeur médiane est prohibitif sur un ordinateur parallèle.
+parallèle
+Le remède est de choisir une valeur pivot proche de la vraie médiane !
+
+- Autant de blocks que de programmes // qui se lancent (max : 65535)
+- Threads par block par groupe de 32 (max 1024 par block) donc multiple de 32
+- Threads gèrent 1 élément d'une table chacun 
+
+Combien de threads/bloc et de blocs/grille ?
+• Faire des blocs de taille moyenne (128/256 threads) pour 
+permettre aux deux schedulers d’optimiser l’exécution
+• NVIDIA propose un outil pour calculer la taille des blocs 
+menant à l’occupation maximale des ressources du GPU
+• Expérimenter des tailles de blocs de 32/64/128/256/512/1024 !
